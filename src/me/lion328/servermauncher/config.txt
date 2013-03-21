@@ -1,0 +1,23 @@
+#ไฟล์ตั้งค่าของ ServerMauncher
+#โดย lion328
+
+	#ที่อยู่ของ Minecraft
+	minecraftDir = {APPDATA}\MC-TUTU
+	#URL ที่ส่ง user และ password ทำให้ส่งข้อมูลเป็น true กับ false ไม่มีก็ไม่ต้องใส่
+	authURL = http://localhost/testlauncher/checkauth.php?user={0}&password={1}
+	#URL ที่ในนั้นประกอบไปด้วยไฟล์ bin/minecraft.jar, mods/comp... ,bin/lwjgl_u... และตัว launcher เอง
+	dlURL = http://localhost/testlauncher/dl
+	#URL ที่ส่ง
+	hashURL = http://localhost/testlauncher/checkmd5.php?file={0}&md5={1}
+	#URL ที่เป็นแหล่งข้อมูล (เริ่มบรรทัดใหม่ได้โดยพิมพ์ \n)
+	txtNewsURL = http://localhost/testlauncher/news.txt
+	#URL ที่พาไปสมัครสมาชิก
+	registerURL = http://localhost/register
+	#Title ของโปรแกรม
+	title = ServerMauncher 1.0
+	#ชื่อ launcher ที่ไม่มีนามสกุล เช่น ServerMauncher ไม่ใช่ ServerMauncher.exe เพื่อใช้ในหลายระบบ และในการดาวน์โหลดด้วย
+	launcherDL = ServerMauncher
+	#URL ที่ส่งรายชื่อไฟล์ออกมา เช่น \bin\minecraft.jar บรรทัดใหม่(<br> ไม่ใช่ \n) \MinecraftSP.jar บรรทัดใหม่ \bin\natives\Ope... แต่ไม่มี Launcher อยู่ในนั้น และแยกระบบปฏิบัติการออกด้วย ด้วยอักษรด้านหลัง เช่น -linux -win -solaris -macos
+	fileListURL = http://localhost/testlauncher/getfilelist.php
+
+#EOF
