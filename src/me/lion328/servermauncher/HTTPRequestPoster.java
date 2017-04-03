@@ -26,8 +26,6 @@ public class HTTPRequestPoster {
 		if (endpoint.startsWith("http://")) {
 			// Send a GET request to the servlet
 			try {
-				// Construct data
-				StringBuffer data = new StringBuffer();
 
 				// Send data
 				String urlStr = endpoint;

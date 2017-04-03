@@ -5,34 +5,33 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Arrays;
 
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
-public class PatchDownload {
+public class PatchDownload extends Thread{
 
 	private String[] url;
 	private JLabel label;
 	private JProgressBar pbar;
 	private String[] param;
 
-	public PatchDownload(String par1[], JLabel par2, JProgressBar par3,
+	public PatchDownload(String par0, String par1[], JLabel par2, JProgressBar par3,
 			String[] par4) {
+		super(par0);
 		url = par1;
 		label = par2;
 		pbar = par3;
 		param = par4;
 	}
 
-	public void download() {
+	public void run() {
+		Util.log("Downloading patch...");
 		try {
 			for (String thisUrl : url) {
 				thisUrl = thisUrl.replace(" ", "%20");
 
 				if (thisUrl.contains("-")) {
-					System.out.println(thisUrl.substring(thisUrl
-							.lastIndexOf("-")));
 					String b = "";
 					for (String a : Util.getOtherPlatform()) {
 						b += "-" + a;
@@ -42,9 +41,15 @@ public class PatchDownload {
 					}
 				}
 
-				if (Util.isLatestPatchFile(LauncherSetting.minecraftDir
-						+ thisUrl))
+				if (Util.isLatestPatchFile(LauncherSetting.minecraftDir+ thisUrl)){
+					Util.log("File \""+thisUrl+"\" is latest version.");
+					label.setText("เช็คไฟล์ "+thisUrl+" เป็นไฟล์ล่าสุด");
+					pbar.setValue(100);
 					continue;
+				} else {
+					Util.log("File \""+thisUrl+"\" is outdated version. Updating...");
+					label.setText("เช็คไฟล์ "+thisUrl+" ไม่เป็นไฟล์ล่าสุด กำลังดาวน์โหลด...");
+				}
 				if (!new File(LauncherSetting.minecraftDir
 						+ thisUrl.substring(0, thisUrl.lastIndexOf('/')))
 						.isDirectory()) {
@@ -61,8 +66,8 @@ public class PatchDownload {
 						LauncherSetting.minecraftDir + thisUrl));
 
 				byte[] fileData = new byte[con.getContentLength()];
-
 				int onepercent = fileData.length / 100;
+				Util.log("Downloading \""+thisUrl+"\" ...");
 				for (int x = 0; x < fileData.length; x++) {
 					fileData[x] = in.readByte();
 					if (onepercent != 0) {
@@ -79,7 +84,10 @@ public class PatchDownload {
 				in.close();
 				out.close();
 			}
+			Util.log("Running game...");
+			label.setText("ทำงานเสร็จสิ้น กำลังเริ่มเกม...");
 			Util.runMinecraft(param, 1024);
+			Util.saveLog();
 			System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();

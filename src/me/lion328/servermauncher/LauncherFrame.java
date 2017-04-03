@@ -21,6 +21,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.swing.JProgressBar;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class LauncherFrame {
 
@@ -51,13 +53,26 @@ public class LauncherFrame {
 	 * @throws Exception
 	 */
 	public LauncherFrame() throws Exception {
+		System.out.println("ServerMauncher "+LauncherSetting.version+" by lion328\n======================================");
+		Util.log("Loading setting...");
 		Util.readConfig();
-		
-		if(MD5FileUtil.getMD5Checksum(Util.findPathJar(this.getClass()).replace("%20", " ")).contains(HTTPRequestPoster.sendGetRequest(LauncherSetting.hashURL.replace("{0}", LauncherSetting.launcherFileName + Util.getSystemJavaExet()), ""))){
+		Util.printSetting();
+		Util.log("Checking launcher hash...");
+		try{
+		if((!LauncherSetting.launcherDL.equals("") ? !HTTPRequestPoster.sendGetRequest(LauncherSetting.hashURL.replace("{0}", LauncherSetting.launcherDL).replace("{1}", MD5FileUtil.getMD5Checksum(Util.findPathJar(LauncherFrame.class))), "").contains("true") : false)){
+			Util.log("Launcher is invaild. Download latest launcher and exiting...");
 			JOptionPane.showMessageDialog(null, "ตัว Launcher ไม่ใช่รุ่นล่าสุด ระบบจะพาดาวน์โหลดอัตโนมัติ...", "มีการอัพเดท", JOptionPane.INFORMATION_MESSAGE);
-			Util.runURL(new URI(LauncherSetting.dlURL + "/" + LauncherSetting.launcherFileName + Util.getSystemJavaExet()));
+			Util.runURL(new URI(LauncherSetting.dlURL + "/" + LauncherSetting.launcherDL));
+			Util.saveLog();
+			System.exit(0);
+		}}catch(Exception e){
+			e.printStackTrace();
+			Util.log("Can't connect to server. Exitng...");
+			JOptionPane.showMessageDialog(null, "ไม่สามารถเชื่อมต่อเซิฟเวอร์ได้", "ผิดพลาด", JOptionPane.ERROR_MESSAGE);
+			Util.saveLog();
 			System.exit(0);
 		}
+		Util.log("Launcher is vaild. Run gui...");
 		
 		initialize();
 	}
@@ -72,11 +87,23 @@ public class LauncherFrame {
 		
 		
 		frame = new JFrame();
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				Util.log("Exiting...");
+				try {
+					Util.saveLog();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				System.exit(0);
+			}
+		});
 		frame.setIconImage(ImageIO.read(LauncherFrame.class
 				.getResourceAsStream("favicon.png")));
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 906, 537);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		int left = (d.width - frame.getWidth()) / 2;
 		int top = (d.height - frame.getHeight()) / 2;
@@ -87,6 +114,7 @@ public class LauncherFrame {
 		textField.setBounds(646, 117, 217, 23);
 		textField.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		textField.setColumns(10);
+		textField.setText(Util.readUsername());
 		frame.getContentPane().setLayout(null);
 
 		passwordField = new JPasswordField();
@@ -100,8 +128,8 @@ public class LauncherFrame {
 
 		JTextPane txtpnNews = new JTextPane();
 		txtpnNews.setEditable(false);
-		txtpnNews.setText(HTTPRequestPoster.sendGetRequest(
-				LauncherSetting.txtNewsURL, "").replace("\\n", "\n"));
+		txtpnNews.setText((LauncherSetting.txtNewsURL.equals("") ? HTTPRequestPoster.sendGetRequest(
+				LauncherSetting.txtNewsURL, "").replace("\\n", "\n") : ""));
 		txtpnNews.setBounds(33, 85, 563, 281);
 		frame.getContentPane().add(txtpnNews);
 
@@ -116,7 +144,7 @@ public class LauncherFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				try {
-					Util.runURL(new URI(LauncherSetting.registerURL));
+					if(!LauncherSetting.registerURL.equals("")) Util.runURL(new URI(LauncherSetting.registerURL));
 				} catch (URISyntaxException e) {
 					e.printStackTrace();
 				}
@@ -124,7 +152,7 @@ public class LauncherFrame {
 		});
 		panel_1.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		panel_1.setOpaque(false);
-		panel_1.setBounds(674, 209, 82, 23);
+		panel_1.setBounds(674, 204, 82, 28);
 		frame.getContentPane().add(panel_1);
 
 		final JProgressBar progressBar = new JProgressBar();
@@ -145,16 +173,26 @@ public class LauncherFrame {
 		panel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				if(textField.getText().equals("") || (new String(passwordField.getPassword()).equals("") && !LauncherSetting.authURL.equals(""))){ 
-					JOptionPane.showMessageDialog(null, "ชื่อผู้ใช้หรือรหัสผ่านต้องไม่ว่างเปล่า", "ผิดพลาด", JOptionPane.ERROR_MESSAGE);
+				Util.log("Trying login as \""+textField.getText()+"\"...");
+				if(textField.getText().trim().equals("") || (new String(passwordField.getPassword()).equals("") && !LauncherSetting.authURL.equals(""))){
+					Util.log("Username or password is empty. Try again.");
+					JOptionPane.showMessageDialog(null, "ชื่อผู้ใช้หรือรหัสผ่านต้องไม่ว่างเปล่า กรุณาลองใหม่อีกครั้ง", "ผิดพลาด", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				if(Util.getCustomAuth(textField.getText(), new String(passwordField.getPassword()))){
+				if(Util.getCustomAuth(textField.getText().trim(), new String(passwordField.getPassword()))){
+					Util.log("Logged in as \""+textField.getText()+"\"");
 					try {
-						Util.downloadPatch(lblNewLabel, progressBar, new String[]{textField.getText()});
+						Util.writeUsername(textField.getText());
+					} catch (Exception e1) {}
+					Util.log("Saved username as \""+textField.getText()+"\"");
+					try {
+						Util.downloadPatch(lblNewLabel, progressBar, new String[]{textField.getText().trim()});
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
+				} else {
+					Util.log("Username or password is invaild. Try again.");
+					JOptionPane.showMessageDialog(null, "ชื่อผู้ใช้หรือรหัสผ่านผิด กรุณาลองใหม่อีกครั้ง", "ผิดพลาด", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
