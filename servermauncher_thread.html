@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>[Java] ServerMauncher ตัวรันเกมสำหรับเซิฟเวอร์ทั่วไป</title>
+<meta charset="utf-8">
+<style>
+body {
+    font-size: 16;
+}
+</style>
+</head>
+<body>
+<h1>[Java] ServerMauncher ตัวรันเกมสำหรับเซิฟเวอร์ทั่วไป</h1>
+
+สวัสดีครับผมแจกอีกแล้วสำหรับตัว Launcher ที่มีชื่อว่า ServerMauncher ครับซึ่งมีคุณสมบัติทั้งหมดังนี้<br>
+- เช็ค MD5 ของไฟล์<br>
+- ใช้งานง่าย ไม่มีความรู้พื้นฐานของ Java ก็สามารถแก้ไขได้<br>
+- ระบบ Login ก่อนเข้าเกม<br>
+- ระบบ Auto-patch<br>
+- ระบบข่าว<br>
+- แก้ BG ได้เลย ไม่ต้องผ่านการ Compile อีกรอบ<br>
+แต่ที่ผมดีใจคือคนที่ใช้ไม่จำเป็นต้องแตะโค้ด Java แม้แต่นิดเดียวเลย ตัวอย่างของการตั้งค่าครับ<br>
+<br>
+<pre>
+#Configuration for ServerMauncher
+#by lion328
+
+    minecraftDir = {APPDATA}\.java-minecraft
+    authURL = http://localhost/checkuser.php?user={0}&password={1}
+    dlURL = http://localhost/dlfiles
+    hashURL = http://localhost/getmd5.php?file={0}
+    txtNewsURL = http://dl.dropbox.com/s/s8r7ghbljq0exwr/testnews.txt
+    registerURL = http://localhost/register.php
+    title = ServerMauncher 1.0
+
+#EOF
+</pre>
+<br>
+*ส่วนที่ด้านหน้าเป็น # ไม่ต้องสนใจนะครับเป็น comment เฉยๆ<br>
+เรามาดูภาพตัวอย่างกันดีกว่าครับ ยังไม่เสร็จสมบูรณ์ เหลือนแค่ระบบดาวน์โหลดไฟล์เทานั้นเอง<br>
+<img src="https://upic.me/i/9u/servermaunchertest.png"><br>
+EDIT: SS2<br>
+<img src="https://upic.me/i/gm/servermauncherss2.png"><br>
+<br>
+ดาวน์โหลด: <a href="http://www.mediafire.com/download/uuos797w58g8fdd/ServerMauncher-0.1-R01.zip">0.1R01(ยังไม่เต็ม)</a> <a href="http://www.mediafire.com/download/15cp00r47jqa648/ServerMauncher-0.1-R02.zip">0.1R02(ยังไม่เต็ม)</a><br>
+--------------------------------------------------------------------------<br>
+ยาวไปต้องอ่านครับแปบเดียว:<br>
+วิธีแก้ไขก็เหมือนลง Mod ทั่วไปเอาไฟล์ใน ServerMauncher.jar ออกมาตรง me/lion328/servermauncher ตัว config.txt กับ bg.png ครับ เอาออกมาแก้ไขได้เลย ตัวที่ใหก้ดาวน์โหลดมีไฟล์ตัวอย่างเซิฟที่จะให้ดาวน์โหลดไฟล์ด้วย(พอดีลืมยัดไฟล์ launcher ใส่ใน dl เลยยังไม่เสร็จ) และมีไฟล์ต้นฉบับของพื้นหลัง launcher ด้วย เป็นไฟล์ photoshop ใครแต่งเก่งๆ ก็แต่งได้เลยครับ ยัดใส่คืนเหมือนลง Mod อาจจะงงไปหน่อยเดี๋ยวถ้าตัวเต็มมาจะอัดคลิปให้ดูนะครับ ตอนนี้ช่วยกันรายงานบัคกันก่อน ไม่งั้นบัคตรึมแน่ๆ เห็นนิสัยคนไทยชอบเอา direct link มาแปะๆ เลยไม่ได้ตัวล่าสุดแล้วมาบ่นกับผู้พัฒนานี่มันน่าตืบจริงๆ ครับ ยังไงก็ช่วยไปทดลอง ถ้าคิดว่าไม่มีบัคแล้วนำไปใช้ได้เลย แต่ถ้ามีบัคช่วย report ในกระทู้นี้ จะได้ช่วยกันแก้ให้สมบูรณ์ต่อไป แล้วก็ช่วยแชร์รูปพื้นหลังของ launcher บ้างก็ดีนะครับะได้มีคนเลือกรูปแบบหลากหลายทำให้น่าใช้ขึ้น<br>
+--------------------------------------------------------------------------<br>
+งมกับ bg เป็นรูปภาพนาน 4 ชม. เต็มๆ <img src="http://mylolface.com/assets/faces/rage-red-eyes.jpg" width="50" height="50"><br>
+</body>
